@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/monokai.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<section>
+						<h2>Functional Programming</h2>
+						<p>A new way of thinking</p>
+					</section>
+
+					<section>
+						<h2>FP languages</h2>
+						<ul>
+							<li>Haskell</li>
+							<li>OCaml</li>
+							<li>Scala</li>
+							<li>F#</li>
+							<li>Elm</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>A pure functional language:</h3>
+						<ul>
+							<li>Building blocks are functions</li>
+							<li>Everything is immutable by default</li>
+							<li>Everything is an expression (vs statement)</li>
+							<li>No side effect (pure)</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Function</h2>
+						<p>The first building block</p>
+					</section>
+
+					<section>
+						<h2>SOLID</h2>
+						<p>Single responsibility</p>
+						<img height="400px" data-src="./images/clean-code.png" alt="Clean code book"/>
+					</section>
+
+					<section>
+						<h3>What is a function?</h3>
+						<div class="fragment">
+							<p >f(x) = x + 1</p>
+							<img height="400px" data-src="./images/function.png"/>
+						</div>
+					</section>
+
+					<section>
+						<p>1 input => 1 output</p>
+						<p>No side effect</p>
+					</section>
+
+					<section>
+						<h3>FP vs OOP</h3>
+						<p class="fragment">Expression vs Statement</p>
+						<p class="fragment">Immutable vs Mutable</p>
+						<p class="fragment">Declarative vs Imperative</p>
+					</section>
+
+					<section>
+						<h3>Currying</h3>
+						<p>Haskell:</p>
+						<pre>
+							<code class="hljs hs">
+add :: Int -> Int -> Int
+add x y = x + y
+							</code>
+						</pre>
+						<p>Javascript:</p>
+						<pre>
+							<code class="hljs js">
+const add = x => y => x + y;
+// Note the similarity of the arrows
+							</code>
+						</pre>
+					</section>
+
+					<section>
+						<h3>Partial application</h3>
+						<p>Haskell:</p>
+						<pre>
+							<code class="hljs hs">
+add69 :: Int -> Int
+add69 = add 69
+							</code>
+						</pre>
+						<p>Javascript:</p>
+						<pre class="fragment">
+							<code class="hljs js">
+const add69 = add(69);
+							</code>
+						</pre>
+					</section>
+
+					<section>
+						<p>Haskell:</p>
+						<pre>
+							<code class="hljs hs">
+getApiURL :: HostName -> ResourceName -> Int -> IO ()
+getApiURL x y z = ...
+
+getUserURL :: Int -> IO ()
+getUserURL = getApiURL "localhost:3000" "users"
+							</code>
+						</pre>
+						<p>Javascript:</p>
+						<pre>
+							<code class="hljs js">
+const getApiURL = apiHostname => resourceName => resourceId =>
+	`https://${apiHostname}/api/${resourceName}/${resourceId}`;
+const getUserURL = getApiURL('localhost:3000')('users');
+							</code>
+						</pre>
+					</section>
+
+					<section>
+						<h4>You have already used some FP!</h4>
+						<p class="fragment">map, filter, reduce, some, every... These are higher order functions</p>
+						<p class="fragment">Because functions (behaviors) are data too!</p>
+					</section>
+
+					<section>
+						<h6>Example</h6>
+						<p>Filter a list of employees to get everyone that are:</p>
+						<ul>
+							<li>< 28 years old</li>
+							<li>plays FIFA 19</li>
+							<li>has words per minute > 80</li>
+						</ul>
+						<pre class="fragment">
+							<code class="hljs js">
+let awesomeEmployees = [];
+for (let i = 0; i < employees.length; i++) {
+	const employee = employees[i];
+
+	if (employee.age < 28 &&
+		employee.playFifa &&
+		employee.wpm > 80) {
+		awesomeEmployees.push(employee);
+	}
+}
+							</code>
+						</pre>
+					</section>
+
+					<section>
+						<pre>
+							<code class="hljs js">
+const awesomeEmployees = employees.filter({age, playFifa, wpm} => age < 28 && playFifa && wpm > 80);
+// Note the use of destructuring, Haskell has pattern matching
+							</code>
+						</pre>
+
+						<p class="fragment">What if we want to store and update the conditions on the fly?</p>
+
+						<pre class="fragment">
+							<code class="hljs hs">
+conditions = [(< 28) . age, (== True) . playFifa, (> 80) . wpm]
+
+getAwesomeEmployees :: [ Employee ] -> [ Employee ]
+getAwesomeEmployees = filter awesome
+	where awesome employee = and $ map ($ employee) conditions
+
+awesomeEmployees = getAwesomeEmployees employees
+							</code>
+						</pre>
+
+					</section>
+					<!--TODO 1 more example of compose and higher order function (point 2 in Notes) -->
+					<!--TODO point out that the previous example will fail if the param is of different type -->
+					<!--TODO that's why static typed helps -->
+					<!--TODO why create class when we have immutable data structure (type)? -->
+
+				</section>
+
+			</div>
+		</div>
+
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true }
+				],
+			  	transition: 'fade',
+			});
+		</script>
+	</body>
+</html>
